@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CityPulse - Homepage</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <img src="/Logo2.png" alt="CityPulse logo">
+      <h2>CityPulse</h2>
+    </div>
+
+    <div class="nav__search" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" fill="none" stroke="#9bb1ad" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <!-- search input -->
+      <input id="search" type="text" placeholder="Search issues by heading (starts with)…" aria-label="Search issues" />
+    </div>
+
+    <ul>
+      <li><a href="/" class="nav-btn">Home</a></li>
+      <li><a href="/new" class="nav-btn">Report Issue</a></li>
+      <li><a href="/profile" class="nav-btn">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE -->
+  <main class="main">
+    <!-- LEFT: FEED -->
+    <section class="left-panel" id="feed">
+      <% for (let post of posts) { %>
+      <article class="post" data-heading="<%= (post.heading || '').toLowerCase() %>">
+        <div class="post-img">
+          <img src="<%= post.photo %>" alt="Issue photo">
+        </div>
+
+        <div class="post-details">
+          <h2><%= post.heading %></h2>
+          <p><%= post.info %></p>
+          <p class="time"><%= Math.floor((Date.now() - new Date(post.createdAt)) / (1000 * 60)) %> minutes ago</p>
+          <p>by - <%= post.user || 'Anonymous' %></p>
+
+          <div class="post-actions">
+            <div class="status-dropdown" data-id="<%= post.id %>">
+              <button class="status-btn" data-status="<%= post.status || 'pending' %>">
+                <span class="status-icon">
+                  <% if (post.status === 'in-progress') { %>Status<% } else if (post.status === 'resolved') { %>Status<% } else { %>Status<% } %>
+                </span>
+                <span class="status-text">
+                  <% if (post.status === 'in-progress') { %>In-Progress<% } else if (post.status === 'resolved') { %>Resolved<% } else { %>Pending<% } %>
+                </span>
+                <span class="dropdown-arrow">▼</span>
+              </button>
+
+              <div class="dropdown-menu">
+                <div class="dropdown-item" data-status="pending"><span class="item-icon">⏳</span><span class="item-text">Pending</span></div>
+                <div class="dropdown-item" data-status="in-progress"><span class="item-icon">🔄</span><span class="item-text">In-Progress</span></div>
+                <div class="dropdown-item" data-status="resolved"><span class="item-icon">✅</span><span class="item-text">Resolved</span></div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="upvote-btn" data-id="<%= post.id %>">
+                <span class="upvote-count"><%= post.upvotes %></span> ⬆️Upvote
+              </button>
+
+              <div class="report-dropdown" data-id="<%= post.id %>">
+                <button class="report-btn">
+                  <span class="report-count"><%= post.reports || 0 %></span> 🚩Report
+                </button>
+
+                <div class="report-dropdown-menu">
+                  <div class="report-dropdown-item" data-reason="spam">Spam</div>
+                  <div class="report-dropdown-item" data-reason="inappropriate">Inappropriate</div>
+                  <div class="report-dropdown-item" data-reason="false-info">False Information</div>
+                  <div class="report-dropdown-item" data-reason="duplicate">Duplicate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <% } %>
+    </section>
+
+    <!-- RIGHT: MAP -->
+    <aside class="right-panel">
+      <div class="panel__head">
+        <h1>Live Map</h1>
+      </div>
+      <div id="map" style="height:520px; border-radius:12px;"></div>
+    </aside>
+  </main>
+
+  <!-- posts JSON for client -->
+  <script id="posts-data" type="application/json"><%- JSON.stringify(posts || []) %></script>
+
+  <!-- Leaflet JS (must load before our map code) -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Inline script: map, markers, search, dropdown wiring -->
+  <script>
+    (function () {
+      // Basic sanity
+      const postsDataElement = document.getElementById('posts-data');
+      let postsData = [];
+      try {
+        postsData = JSON.parse(postsDataElement ? postsDataElement.textContent : '[]');
+      } catch (err) {
+        console.log('Failed to parse posts-data JSON', err);
+        postsData = [];
+      }
+      console.log('✅ posts loaded client-side:', postsData.length);
+
+      // Initialize map
+      const map = L.map('map').setView([19.0760, 72.8777], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+      // Example static markers (kept separate)
+      L.marker([19.0760, 72.8777]).addTo(map).bindPopup('<b>Pothole Issue</b><br>Kurla West');
+      L.marker([19.0900, 72.8800]).addTo(map).bindPopup('<b>Garbage Overflow</b><br>Ghatkopar West');
+
+      // Layer to hold post markers
+      const postMarkersLayer = L.layerGroup().addTo(map);
+      let allMarkers = []; // cached marker objects with heading metadata
+
+      function addPostMarkers(data) {
+        postMarkersLayer.clearLayers();
+        allMarkers = [];
+
+        data.forEach(post => {
+          // Accept multiple key names (Lat/Lon or lat/lng)
+          const latRaw = post.Lat ?? post.lat ?? post.latitude ?? post.latVal;
+          const lonRaw = post.Lon ?? post.lng ?? post.lon ?? post.longitude ?? post.lngVal;
+
+          const lat = latRaw !== undefined && latRaw !== null ? parseFloat(latRaw) : NaN;
+          const lon = lonRaw !== undefined && lonRaw !== null ? parseFloat(lonRaw) : NaN;
+
+          if (!isNaN(lat) && !isNaN(lon)) {
+            const marker = L.marker([lat, lon]).bindPopup(
+              `<b>${escapeHtml(post.heading || 'Issue')}</b><br>` +
+              `${escapeHtml(post.info || '')}<br>` +
+              `<i>by ${escapeHtml(post.user || 'Anonymous')}</i><br>` +
+              `<small>Upvotes: ${post.upvotes || 0} | Reports: ${post.reports || 0}</small>`
+            );
+            // store normalized heading for search
+            marker._heading = (post.heading || '').toLowerCase();
+            allMarkers.push(marker);
+            postMarkersLayer.addLayer(marker);
+          } else {
+            // debug output for invalid coords
+            console.log('Skipping post marker, invalid coords', post.heading, latRaw, lonRaw);
+          }
+        });
+
+        console.log(`📍 Added ${allMarkers.length} post markers`);
+      }
+
+      // escape for popup HTML
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
+
+      // initial add
+      addPostMarkers(postsData);
+
+      // ---------------- SEARCH (prefix match on heading) ----------------
+      const searchInput = document.getElementById('search');
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          const q = this.value.trim().toLowerCase();
+
+          // filter posts in left panel
+          document.querySelectorAll('.post').forEach(card => {
+            const heading = (card.dataset.heading || '').toLowerCase();
+            card.style.display = (q === '' || heading.startsWith(q)) ? 'flex' : 'none';
+          });
+
+          // filter markers: remove all then re-add matching
+          postMarkersLayer.clearLayers();
+          if (q === '') {
+            allMarkers.forEach(m => postMarkersLayer.addLayer(m));
+          } else {
+            allMarkers.forEach(m => {
+              if (m._heading && m._heading.startsWith(q)) postMarkersLayer.addLayer(m);
+            });
+          }
+        });
+      }
+
+      // ---------------- Upvote button handler (AJAX + UI change) ----------------
+      document.addEventListener('click', async (e) => {
+        const upBtn = e.target.closest('.upvote-btn');
+        if (!upBtn) return;
+        e.preventDefault();
+
+        const id = upBtn.getAttribute('data-id');
+        if (!id) return;
+
+        try {
+          const res = await fetch(`/upvote/${id}`, { method: 'POST' });
+          const json = await res.json();
+          if (json.success) {
+            const countEl = upBtn.querySelector('.upvote-count');
+            if (countEl) countEl.textContent = json.upvotes;
+            // visual clicked state
+            upBtn.style.backgroundColor = '#f59e0b';
+            upBtn.style.color = '#001814';
+            upBtn.disabled = true;
+            
+          } else {
+            // already voted or other error
+            console.log('Upvote failed:', json.message || json);
+            if (json.message) console.log(json.message);
+          }
+        } catch (err) {
+          console.log('Upvote request failed', err);
+        }
+      });
+
+      // ---------------- Report button handler ----------------
+      document.addEventListener('click', async (e) => {
+        // Handle report dropdown item clicks
+        const reportItem = e.target.closest('.report-dropdown-item');
+        if (reportItem) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const dropdown = reportItem.closest('.report-dropdown');
+          const id = dropdown.getAttribute('data-id');
+          const reason = reportItem.getAttribute('data-reason');
+
+          if (!id || !reason) return;
+
+          try {
+            const res = await fetch(`/report/${id}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ reason: reason })
+            });
+            const json = await res.json();
+            if (json.success) {
+              const reportBtn = dropdown.querySelector('.report-btn');
+              const countEl = reportBtn.querySelector('.report-count');
+              if (countEl) countEl.textContent = json.reports;
+              
+              // Hide dropdown
+              dropdown.querySelector('.report-dropdown-menu').classList.remove('show');
+              
+              // Visual feedback
+              reportBtn.style.backgroundColor = '#dc2626';
+              reportBtn.style.color = 'white';
+              reportBtn.disabled = true;
+              
+              console.log(`Reported post for ${reason}, new count: ${json.reports}`);
+            } else {
+              console.log('Report failed:', json.message || json);
+              if (json.message) alert(json.message);
+            }
+          } catch (err) {
+            console.log('Report request failed', err);
+          }
+          return;
+        }
+
+        // Handle report button clicks (show dropdown)
+        const reportBtn = e.target.closest('.report-btn');
+        if (reportBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const dropdown = reportBtn.closest('.report-dropdown');
+          const menu = dropdown.querySelector('.report-dropdown-menu');
+          
+          // Close other dropdowns
+          document.querySelectorAll('.report-dropdown-menu').forEach(m => {
+            if (m !== menu) m.classList.remove('show');
+          });
+          document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+          
+          menu.classList.toggle('show');
+        }
+      });
+
+      // Status dropdown wiring
+      function wireStatusDropdowns(root = document){
+        root.querySelectorAll('.status-btn').forEach(btn => {
+          btn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const menu = this.parentElement.querySelector('.dropdown-menu');
+            
+            // close others
+            document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+            document.querySelectorAll('.report-dropdown-menu').forEach(m => m.classList.remove('show'));
+            
+            menu.classList.toggle('show');
+            if (menu.classList.contains('show')) {
+              // adjust if off-screen
+              setTimeout(() => {
+                const r = menu.getBoundingClientRect();
+                if (r.right > window.innerWidth - 10) { menu.style.left = 'auto'; menu.style.right = '0'; }
+                if (r.bottom > window.innerHeight - 10) { menu.style.top = 'auto'; menu.style.bottom = 'calc(100% + 5px)'; }
+              }, 10);
+            } else {
+              menu.style.left = ''; menu.style.right = ''; menu.style.top = ''; menu.style.bottom = '';
+            }
+          });
+        });
+
+        root.querySelectorAll('.dropdown-item').forEach(item => {
+          item.addEventListener('click', function () {
+            const newStatus = this.dataset.status;
+            const dropdown = this.closest('.status-dropdown');
+            if (!dropdown) return;
+            const postId = dropdown.dataset.id;
+            const statusBtn = dropdown.querySelector('.status-btn');
+            const statusIcon = statusBtn.querySelector('.status-icon');
+            const statusText = statusBtn.querySelector('.status-text');
+            // update UI
+            statusIcon.textContent = this.querySelector('.item-icon').textContent;
+            statusText.textContent = this.querySelector('.item-text').textContent;
+            statusBtn.dataset.status = newStatus;
+            statusBtn.className = `status-btn status-${newStatus}`;
+            dropdown.querySelector('.dropdown-menu').classList.remove('show');
+            // send to server
+            fetch(`/api/posts/${postId}/status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            })
+              .then(r => r.json())
+              .then(j => { if (!j.success) console.log('Status update failed', j); })
+              .catch(err => console.log('Status update error', err));
+          });
+        });
+
+        // click outside closes all dropdowns
+        document.addEventListener('click', (ev) => {
+          if (!ev.target.closest('.status-dropdown') && !ev.target.closest('.report-dropdown')) {
+            document.querySelectorAll('.dropdown-menu').forEach(m => {
+              m.classList.remove('show');
+              m.style.left = ''; m.style.right = ''; m.style.top = ''; m.style.bottom = '';
+            });
+            document.querySelectorAll('.report-dropdown-menu').forEach(m => {
+              m.classList.remove('show');
+            });
+          }
+        });
+      }
+
+      // wire initial dropdowns
+      wireStatusDropdowns();
+
+      // expose refreshPosts function in case backend updates and you want to call it (optional)
+      window.refreshPostsOnClient = function () {
+        // try to fetch updated posts via api and re-render markers and update data-heading on cards if needed
+        fetch('/api/posts').then(r => r.json()).then(fresh => {
+          // update script tag content (so other code can parse later)
+          const tag = document.getElementById('posts-data');
+          if (tag) tag.textContent = JSON.stringify(fresh);
+          postsData = fresh;
+          addPostMarkers(postsData);
+          // update data-heading attributes on client side cards if markup hasn't been refreshed
+          const cards = document.querySelectorAll('.post');
+          cards.forEach(card => {
+            const id = card.querySelector('.upvote-btn')?.dataset?.id;
+            const p = fresh.find(x => x.id === id);
+            if (p) card.dataset.heading = (p.heading || '').toLowerCase();
+          });
+        }).catch(err => console.error('Failed to refresh posts', err));
+      };
+
+      // optional: auto-refresh posts markers every 30s
+      setInterval(() => { fetch('/api/posts').then(r => r.json()).then(data => { postsData = data; addPostMarkers(data); }).catch(()=>{}); }, 30000);
+    })();
+  </script>
+
+  <!-- external JS for other UI (if you have it) - include after inline script to avoid race issues -->
+  <script src="/script.js"></script>
+</body>
+</html>

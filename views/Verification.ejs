@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Yourself here!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: rgb(218, 209, 209);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #1b1a1a;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 8px 8px 60px 12px rgba(0,0,0,0.8);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: white;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="file"] {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #353232;
+      border-radius: 5px;
+      background-color: #dfd2d2;
+      color: #1b1a1a;
+    }
+    button {
+      background-color: #1E1E1E;
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #353232;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Identity Verification</h2>
+    
+    <form action="/" >
+      <label for="aadhaar">Aadhaar Card Number</label>
+      <input type="text" id="aadhaar" name="aadhaar" placeholder="Enter Aadhaar Number" required>
+
+      <label for="aadhaar-photo">Upload Aadhaar Card Photo</label>
+      <input type="file" id="aadhaar-photo" name="aadhaar-photo" accept="image/*" required>
+
+      <label for="location">Location / Area</label>
+      <input type="text" id="location" name="location" placeholder="Enter Your Area" required>
+
+      <button type="submit">Sign In</button>
+    </form>
+  </div>
+
+</body>
+</html>

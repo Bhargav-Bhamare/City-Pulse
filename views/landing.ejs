@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>CityPulse – Report Local Problems Securely</title>
+  <meta name="description" content="CityPulse is a secure, Aadhaar-verified platform to report local problems, post anonymously or by name, and prioritize issues via upvotes." />
+  <link rel="canonical" href="https://example.com/" />
+
+  <meta property="og:title" content="CityPulse – Report Local Problems Securely" />
+  <meta property="og:description" content="Report local problems, upvote for urgency, and discuss solutions. Aadhaar-verified. Post by name or anonymously." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <style>
+    :root{
+      --bg: hsl(0 0% 100%);
+      --fg: hsl(0 0% 7%);
+      --primary: hsl(0 0% 7%);
+      --on-primary: hsl(0 0% 98%);
+      --grey-50: hsl(0 0% 98%);
+      --grey-100: hsl(0 0% 96%);
+      --grey-200: hsl(0 0% 92%);
+      --grey-400: hsl(0 0% 60%);
+      --grey-700: hsl(0 0% 30%);
+      --grey-800: hsl(0 0% 20%);
+      --shadow-1: 0 4px 16px hsl(0 0% 0% / 0.08);
+      --radius: 14px;
+      --transition: all .25s ease;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--fg);
+      background:var(--bg);
+      line-height:1.5;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin-inline:auto;padding-inline:20px}
+    .btn{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.9rem 1.2rem;border-radius:999px;border:1px solid transparent;
+      font-weight:600;letter-spacing:.2px;cursor:pointer;transition:var(--transition);
+    }
+    .btn-primary{background:var(--primary);color:var(--on-primary)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px hsl(0 0% 0% / .18)}
+    .btn-outline{background:transparent;color:var(--fg);border-color:var(--grey-200)}
+    .btn-outline:hover{background:var(--grey-100)}
+    header{
+      position:sticky;top:0;z-index:10;background:hsla(0,0%,100%,.6);backdrop-filter:saturate(180%) blur(14px);
+      border-bottom:1px solid var(--grey-200);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{font-weight:800;letter-spacing:.5px;font-size:1.2rem}
+    .brand span:last-child{color:var(--grey-800)}
+    .hero{
+      background: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 20%));
+      color:var(--on-primary);
+      padding:80px 0 60px;border-bottom:1px solid var(--grey-200);
+    }
+    .hero-wrap{display:grid;gap:28px;justify-items:center;text-align:center}
+    .badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      border:1px solid hsl(0 0% 100% / .25);
+      background: hsl(0 0% 100% / .08);
+      color:var(--on-primary);
+      padding:.4rem .8rem;border-radius:999px;font-weight:600;font-size:.8rem;
+    }
+    h1{
+      margin:0;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.15;letter-spacing:.3px;
+    }
+    .lead{max-width:760px;color:hsl(0 0% 95%);opacity:.9;font-size:1.1rem}
+    .hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .post-demo{
+      margin-top:18px;background:var(--bg);color:var(--fg);border-radius:var(--radius);
+      box-shadow:var(--shadow-1);padding:18px;max-width:760px;width:100%;
+    }
+    .post-head{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--grey-700)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--grey-400)}
+    .post-title{margin:.4rem 0;font-size:1.05rem;font-weight:700}
+    .post-body{color:var(--grey-700);font-size:.95rem}
+    .post-actions{
+      display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .9rem;border-radius:999px;
+      border:1px solid var(--grey-200);background:var(--grey-100);font-weight:600;color:var(--fg);
+      transition:var(--transition);
+    }
+    .pill:hover{background:var(--grey-50)}
+    .count{color:var(--grey-700);font-weight:700}
+    section.section{padding:72px 0}
+    .grid{display:grid;gap:18px}
+    .features{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .card{
+      background:linear-gradient(145deg, var(--bg), var(--grey-100));
+      border:1px solid var(--grey-200);border-radius:var(--radius);padding:18px 18px 16px;
+      box-shadow:var(--shadow-1);
+    }
+    .card h3{margin:.2rem 0 .2rem;font-size:1.05rem}
+    .muted{color:var(--grey-700);font-size:.95rem}
+    .steps{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .step-num{font-size:2.2rem;font-weight:800;color:var(--grey-400);line-height:1}
+    .cta{
+      background: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 20%));
+      color:var(--on-primary);border-top:1px solid var(--grey-200);
+    }
+    footer{border-top:1px solid var(--grey-200);background:var(--bg)}
+    .footer-grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+    .foot-muted{color:var(--grey-700);font-size:.92rem}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <div class="brand" aria-label="CityPulse">
+        <!-- <img src="/CityPulse/Logo.png " height="30px"> -->
+        <h2>CityPulse</h2>
+      </div>
+      <nav aria-label="Top">
+        <a class="btn btn-outline" href="#how">How it works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-wrap">
+        <div class="badge" aria-label="Security badge">Aadhaar-Verified • Secure</div>
+        <h1 id="hero-title">CityPulse: Report Local Problems Securely</h1>
+        <p class="lead">Post issues in your area with your name or anonymously. Upvotes reveal the seriousness of a problem. Discuss with neighbors and drive real change.</p>
+
+        <div class="hero-cta">
+          <a href="/CityPulse/signIn.html" class="btn btn-primary">Start Reporting</a>
+          <a href="#how" class="btn btn-outline">Learn More</a>
+        </div>
+
+        <!-- Demo Post with the three actions -->
+        <article class="post-demo" aria-label="Example Issue Card">
+          <div class="post-head">
+            <div class="dot" aria-hidden="true"></div>
+            <span>Posted Anonymously • Ward 12 • 2h ago</span>
+          </div>
+          <h2 class="post-title">Overflowing garbage near Market Road</h2>
+          <p class="post-body">Bins haven’t been cleared for 3 days, causing smell and stray animals. Needs urgent attention from sanitation.</p>
+          <div class="post-actions" aria-label="Post actions">
+            <button class="pill" type="button" aria-label="Upvote">
+              ⬆ Upvote <span class="count">124</span>
+            </button>
+            <button class="pill" type="button" aria-label="Responses">
+              ↩ Response <span class="count">12</span>
+            </button>
+            <button class="pill" type="button" aria-label="Comments">
+              💬 Comments <span class="count">31</span>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="features" class="section" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title" style="margin:0 0 18px;font-size:1.8rem;">Built for Trust and Impact</h2>
+        <div class="grid features">
+          <div class="card">
+            <h3>Post by Name or Anonymously</h3>
+            <p class="muted">Choose what’s comfortable. Identity remains private when posting anonymously.</p>
+
+            </div>
+          <div class="card">
+            <h3>Upvotes Signal Urgency</h3>
+            <p class="muted">More upvotes = higher priority. Authorities can quickly identify critical issues.</p>
+          </div>
+          <div class="card">
+            <h3>Aadhaar Verification</h3>
+            <p class="muted">Verified users keep CityPulse secure and free from spam or fake reports.</p>
+          </div>
+          <div class="card">
+            <h3>Responses & Comments</h3>
+            <p class="muted">Get official responses and collaborate with the community to solve problems.</p>
+          </div>
+          <div class="card">
+            <h3>Simple & Transparent</h3>
+            <p class="muted">Clear timelines and public discussion build accountability and trust.</p>
+          </div>
+          <div class="card">
+            <h3>Privacy-First Design</h3>
+            <p class="muted">Your data is protected; post details only you want to share.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section" aria-labelledby="how-title">
+      <div class="container">
+        <h2 id="how-title" style="margin:0 0 18px;font-size:1.8rem;">How CityPulse Works</h2>
+        <div class="grid steps">
+          <div class="card">
+            <div class="step-num">01</div>
+            <h3>Report an Issue</h3>
+            <p class="muted">Describe the problem, add a location and photo, choose name or anonymous.</p>
+          </div>
+          <div class="card">
+            <div class="step-num">02</div>
+            <h3>Community Upvotes</h3>
+            <p class="muted">Neighbors upvote issues they face, indicating seriousness.</p>
+          </div>
+          <div class="card">
+            <div class="step-num">03</div>
+            <h3>Responses & Comments</h3>
+            <p class="muted">Discuss with residents and officials to progress solutions.</p>
+          </div>
+          <div class="card">
+            <div class="step-num">04</div>
+            <h3>Real Change</h3>
+            <p class="muted">High-priority issues get attention and action faster.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta" aria-labelledby="cta-title">
+      <div class="container" style="text-align:center">
+        <h2 id="cta-title" style="margin:0 0 12px;font-size:2rem;">Be the Pulse of Your City</h2>
+        <p style="opacity:.9;max-width:720px;margin:0 auto 18px;">Join CityPulse and help prioritize what matters. Your voice—named or anonymous—drives accountability and safer neighborhoods.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="#features" class="btn btn-primary">Report an Issue</a>
+          <a href="#how" class="btn btn-outline" style="color:var(--on-primary);border-color:hsl(0 0% 100% / .35)">See How</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer aria-label="Footer">
+    <div class="container section" style="padding-top:32px;padding-bottom:32px">
+      <div class="footer-grid">
+        <div>
+          <div class="brand"><span>City</span><span>Pulse</span></div>
+          <p class="foot-muted" style="margin:.6rem 0 0">Secure, Aadhaar-verified platform for reporting local problems.</p>
+        </div>
+        <div>
+          <h4 style="margin:0 0 .4rem">Product</h4>
+          <p class="foot-muted">Features • How it Works • Security</p>
+        </div>
+        <div>
+          <h4 style="margin:0 0 .4rem">Support</h4>
+          <p class="foot-muted">Help Center • Community Guidelines • Contact</p>
+        </div>
+        <div>
+          <h4 style="margin:0 0 .4rem">Legal</h4>
+          <p class="foot-muted">Privacy • Terms • Aadhaar Policy</p>
+        </div>
+      </div>
+      <div class="foot-muted" style="margin-top:16px">© 2024 CityPulse. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+</html>

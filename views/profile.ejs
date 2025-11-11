@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CityPulse User Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f0f0f0;
+      color: #222;
+    }
+    header {
+      background: #000;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 2rem;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: #fff;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .issues {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .issue-item {
+      padding: 1.5rem;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .issue-item:last-child {
+      border-bottom: none;
+    }
+    .issue-title {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 0.5rem;
+    }
+    .issue-meta {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .status.resolved {
+      background: #e0e0e0;
+      color: #333;
+    }
+    .status.in-progress {
+      background: #ccc;
+      color: #000;
+    }
+    .status.pending {
+      background: #f5f5f5;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+    .upvotes {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #000;
+      font-weight: bold;
+    }
+    .comments {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #555;
+    }
+    .btn {
+        background: #000;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      background: #444;
+    }
+    @media (max-width: 768px) {
+      .issue-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your Dashboard</h1>
+  </header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="#">My Reports</a>
+    <a href="#">Logout</a>
+  </nav>
+  <div class="container">
+    <div class="stats">
+      <div class="stat-box">
+        <h2>12</h2>
+        <p>Reports Submitted</p>
+      </div>
+      <div class="stat-box">
+        <h2>8</h2>
+        <p>Resolved</p>
+      </div>
+      <div class="stat-box">
+        <h2>4</h2>
+        <p>Pending</p>
+      </div>
+    </div>
+
+    <div class="issues">
+      <h3>Top Voted Issues</h3>
+
+      <div class="issue-item">
+        <div>
+          <div class="issue-title">Overflowing garbage bin</div>
+          <div class="issue-meta">
+            <span class="status pending">Pending</span>
+            <div class="upvotes">👍 41</div>
+            <div class="comments">💬 12 comments</div>
+          </div>
+        </div>
+<button class="btn" onclick="openModal('Overflowing garbage bin', 'Pending', 41, '12 comments')">View</button>
+      </div>
+
+      <div class="issue-item">
+        <div>
+          <div class="issue-title">Noise complaint - construction site</div>
+          <div class="issue-meta">
+            <span class="status resolved">Resolved</span>
+            <div class="upvotes">👍 32</div>
+            <div class="comments">💬 18 comments</div>
+          </div>
+        </div>
+<button class="btn" onclick="openModal('Overflowing garbage bin', 'Pending', 41, '12 comments')">View</button>
+      </div>
+
+      <div class="issue-item">
+        <div>
+          <div class="issue-title">Pothole on Main Street</div>
+          <div class="issue-meta">
+            <span class="status in-progress">In Progress</span>
+            <div class="upvotes">👍 23</div>
+            <div class="comments">💬 5 comments</div>
+          </div>
+        </div>
+<button class="btn" onclick="openModal('Overflowing garbage bin', 'Pending', 41, '12 comments')">View</button>
+      </div>
+    </div>
+  </div>
+  <!-- Add this inside body -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h2 id="modal-title">Issue Title</h2>
+    <p id="modal-status">Status: </p>
+    <p id="modal-upvotes">👍 </p>
+    <p id="modal-comments">💬 </p>
+  </div>
+</div>
+
+<style>
+  /* ====== MODAL STYLES ====== */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: var(--card);
+    color: var(--text);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+  }
+  .close-btn {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  function openModal(title, status, upvotes, comments) {
+    document.getElementById("modal-title").textContent = title;
+    document.getElementById("modal-status").textContent = "Status: " + status;
+    document.getElementById("modal-upvotes").textContent = "👍 " + upvotes;
+    document.getElementById("modal-comments").textContent = "💬 " + comments;
+    document.getElementById("modal").style.display = "flex";
+  }
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+</script>
+</body>
+</html>

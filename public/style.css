@@ -1,0 +1,530 @@
+body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1313;
+      color: #263238;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    nav {
+      background: #0d2421;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position:absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 50px;
+      border-bottom: 0.5px solid rgb(112, 106, 106);
+    }
+
+    .logo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo img{
+        height: 50px;
+        width: 50px;
+    }
+
+    .logo h2{
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .nav__search {
+        width: 20%;
+        margin-left: 15px;
+        margin-right: 15px;
+        flex: 1; display: flex; align-items: center; gap: 8px;
+        background: #000000;
+        border-radius: 12px; 
+        padding: 8px 10px;
+    }
+    .nav__search input {
+        flex: 1; background: transparent;
+        border: 0;
+        outline: 0;
+        color: white;
+        font-size: 14px;
+    }
+
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+      width: 30%;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    .nav-btn {
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    backdrop-filter: blur(4px);
+    }
+
+    .nav-btn:hover {
+    background: white;
+    color: #009688;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    }
+
+    /* Main Layout */
+    .main {
+      display: flex;
+      flex: 1;
+      margin-top: 60px; /* navbar height */
+    }
+
+    .left-panel {
+      width: 60%;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .right-panel {
+      width: 45%;
+      position: relative;
+    }
+
+    .right-panel h1{
+        margin-top: 30px;
+        color: white;
+    }
+
+    #map {
+      height: 70%;
+      width: 90%;
+    }
+
+    /* Post Card */
+    .post {
+      background: #0d2421;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.2s;
+      display: flex;
+      justify-content: space-between;
+      
+    }
+
+    .post:hover {
+      transform: translateY(-4px);
+    }
+
+    .post-img {
+      width: 20%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .post-img img{
+        width: 15rem;
+        height: 15rem;
+    }
+
+    .post-details {
+      width: 60%;
+      padding: 15px;
+    }
+
+    .post-details h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      color: #ffffff;
+    }
+
+    .post-details p {
+      margin: 20px 0;
+      font-size: 14px;
+      color: white;
+    }
+
+    .time {
+      font-size: 12px;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    /* Post Actions - Updated Layout */
+    .post-actions {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto; /* Push to flex-end */
+    }
+
+    /* Updated Upvote Button - Better size */
+    .upvote-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2c302e, #000000);
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 80px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .upvote-btn:hover {
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, #009688, #00796b);
+    }
+
+    .upvote-btn:disabled {
+      background: #f59e0b !important;
+      color: #001814 !important;
+      cursor: not-allowed;
+    }
+
+    .upvote-count {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Report Button and Dropdown */
+    .report-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .report-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2c302e, #000000);
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 80px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .report-btn:hover {
+      border-color: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
+    .report-count {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .report-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      min-width: 140px;
+      width: max-content;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 30000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      overflow: visible;
+      white-space: nowrap;
+    }
+
+    .report-dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .report-dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .report-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .report-dropdown-item:hover {
+      background: #fee2e2;
+      transform: translateX(2px);
+      color: #dc2626;
+    }
+
+     /* Status Dropdown Styles */
+    .status-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .status-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 120px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .status-btn:hover {
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .status-btn.status-pending {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #2c302e, #000000);
+    }
+
+    .status-btn.status-in-progress {
+      border-color: #3b82f6;
+      background: linear-gradient(135deg, #2c302e, #000000);
+    }
+
+    .status-btn.status-resolved {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #2c302e, #000000);
+    }
+
+    .status-icon {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      color: rgb(0, 0, 0);
+    
+    }
+
+    .status-text {
+      flex: 1;
+      text-align: left;
+      color: white;
+    }
+
+    .dropdown-arrow {
+      font-size: 10px;
+      transition: transform 0.2s ease;
+      color: #64748b;
+    }
+
+    .status-btn:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      min-width: 140px;
+      width: max-content;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index:10000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      overflow: visible;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: #f8fafc;
+      transform: translateX(2px);
+    }
+
+    .dropdown-item[data-status="pending"]:hover {
+      background: linear-gradient(90deg, #fef3c7, #f8fafc);
+    }
+
+    .dropdown-item[data-status="in-progress"]:hover {
+      background: linear-gradient(90deg, #dbeafe, #f8fafc);
+    }
+
+    .dropdown-item[data-status="resolved"]:hover {
+      background: linear-gradient(90deg, #d1fae5, #f8fafc);
+    }
+
+    .item-icon {
+      font-size: 16px;
+    }
+
+    .item-text {
+      font-weight: 500;
+      color: #374151;
+    }
+
+    /* Notification Animation */
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Ensure posts have proper overflow handling */
+    .post {
+      position: relative;
+      overflow: visible;
+      margin-bottom: 20px;
+    }
+
+    .post-details {
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Left panel overflow fix */
+    .left-panel {
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Main container overflow fix */
+    .main {
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Ensure dropdown parent creates stacking context */
+.status-dropdown {
+  position: relative;
+  z-index: 20000; /* higher than map/posts */
+  background-color: #000000;
+  color: white;
+}
+
+/* Force dropdown menu above everything */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  min-width: 140px;
+  width: max-content;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 30000;  /* 🚀 force on top */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+/* Visible when toggled */
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Fix for the very first post */
+.post:first-child {
+  overflow: visible !important;
+  position: relative;
+  z-index: 10000; /* so dropdown stacks above siblings */
+}
+
+.posts-container {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Report dropdown z-index */
+.report-dropdown {
+  position: relative;
+  z-index: 20000;
+}
+
+
+
+

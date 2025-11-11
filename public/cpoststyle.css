@@ -1,0 +1,125 @@
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #1a1313;
+  color: #eaeaea;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+.container {
+  background: #0d2421;
+  margin-top: 60px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 80%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.8rem;
+  color: #76c7c0;
+}
+
+/* Form */
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-size: 14px;
+  color: #c7c7c7;
+  margin-bottom: 5px;
+}
+
+/* Inputs, Select, Textarea */
+input[type="text"],
+input[type="file"],
+select,
+textarea {
+  background: #1f3a36;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #888;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background: #29554f;
+  box-shadow: 0 0 6px rgba(118,199,192,0.5);
+}
+
+/* Textarea */
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Checkbox */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-group input {
+  width: 16px;
+  height: 16px;
+}
+
+/* Submit Button */
+.submit-btn {
+  background: #76c7c0;
+  color: #0d2421;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #5bb1aa;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+}
+
+/* Location Tracking */
+
+.location-group {
+  display: flex;
+  gap: 8px;
+}
+
+.loc-btn {
+  background: #76c7c0;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.loc-btn:hover {
+  background: #5bb1aa;
+}
+
