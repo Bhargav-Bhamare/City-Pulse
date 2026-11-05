@@ -10,6 +10,18 @@ const multer = require("multer");
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Add JSON parsing for API routes
 
